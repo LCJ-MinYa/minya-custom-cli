@@ -1,0 +1,80 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const chalk = require('chalk');
+let isExecute = false;
+
+function checkParams(){
+    if(program.args.length > 1){
+        let val = program.args[0];
+        if(val == 'a' || val == 'add' || val == 'i' || val == 'init' || val == 'd' || val == 'delete' || val == 'l' || val == 'list'){
+            console.log(chalk.red('\n' + '  错误的指令！'));
+            console.log(chalk.red('  请查看帮助获取指令！'));
+            program.help();
+        }
+    }
+}
+
+program
+    .version(require('../package').version)
+    .usage('<command> [options]');
+
+program
+    .command('list')
+    .description('显示所有模板')
+    .alias('l')
+    .action(()=>{
+        isExecute = true;
+        checkParams();
+        let listTpl = require('../lib/list');
+        listTpl();
+    });
+
+program
+    .command('add')
+    .description('添加模板')
+    .alias('a')
+    .action(()=>{
+        isExecute = true;
+        checkParams();
+        let addTpl = require('../lib/add');
+        addTpl();
+    });
+
+program
+    .command('delete')
+    .option('<name>', '输入模版名称,删除模版')
+    .description('删除模板')
+    .alias('d')
+    .action(function(dir){
+        isExecute = true;
+        checkParams();
+        if(program.args.length > 2){
+            console.log(chalk.red('\n' + '  暂只支持一次删除一个模版！' + '\n'));
+        }else{
+            let deleteTpl = require('../lib/delete');
+            deleteTpl(dir);
+        }
+    });
+
+program
+    .command('init')
+    .option('<name>', '输入模版名称,根据模版初始化项目')
+    .description('初始化模版')
+    .alias('i')
+    .action(function(dir){
+        isExecute = true;
+        checkParams();
+        let initTpl = require('../lib/init');
+        initTpl(dir);
+    });
+
+program.parse(process.argv)
+if (!program.args.length) {
+    program.help();
+}
+if(!isExecute){
+    console.log(chalk.red('\n' + '  错误的指令！'));
+    console.log(chalk.red('  请查看帮助获取指令！'));
+    program.help();
+}
