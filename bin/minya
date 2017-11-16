@@ -65,8 +65,9 @@ program
     .action(function(dir){
         isExecute = true;
         checkParams();
+        let fileName = program.args[1];
         let initTpl = require('../lib/init');
-        initTpl(dir);
+        initTpl(dir, fileName);
     });
 
 program.parse(process.argv)
